@@ -50,12 +50,7 @@ class Main {
       });
     }
 
-    win.on('close', (e) => {
-      if (win.isVisible()) {
-        e.preventDefault();
-        win.hide();
-      }
-    });
+    win.on('close', () => win.destroy());
 
     win.on('closed', () => this.win = null);
     return win;
