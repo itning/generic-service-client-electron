@@ -1,6 +1,6 @@
 {
   "name": "generic-service-client-electron",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Generic Service Client By Angular 11 with Electron (Typescript + SASS + Hot Reload)",
   "homepage": "https://github.com/itning/generic-service-client-electron",
   "author": {
