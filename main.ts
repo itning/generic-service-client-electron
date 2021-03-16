@@ -10,6 +10,7 @@ class Main {
   private win: BrowserWindow = null;
   private args = process.argv.slice(1);
   private isServe = this.args.some(val => val === '--serve');
+  private openDev = this.args.some(val => val === '--openDev');
 
   private createWindow(): BrowserWindow {
     const size = screen.getPrimaryDisplay().workAreaSize;
@@ -40,6 +41,9 @@ class Main {
         return err;
       });
     } else {
+      if (this.openDev) {
+        win.webContents.openDevTools();
+      }
       win.loadURL(url.format({
         pathname: path.join(__dirname, 'dist/index.html'),
         protocol: 'file:',
