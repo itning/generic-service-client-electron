@@ -1,0 +1,121 @@
+<div>
+  <nz-tabset [(nzSelectedIndex)]="selectedIndex" (nzSelectedIndexChange)="handleTabChange()" nzType="editable-card"
+             (nzAdd)="newTab()"
+             (nzClose)="closeTab($event)">
+    <nz-tab *ngFor="let tab of tabs;let i=index" [nzClosable]="tabs.length > 1" [nzTitle]="tab.tabName"
+            (nzClick)="handleTabClick(i)">
+      <form nz-form [formGroup]="tab.formParams">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="interfaceName">弱类型接口名（全限定类名）</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="弱类型接口名必填">
+            <nz-input-group>
+              <!--suppress HtmlFormInputWithoutLabel -->
+              <input placeholder="例：top.itning.api.UserApi"
+                     nz-input
+                     formControlName="interfaceName" id="interfaceName"
+                     (input)="availableInterFacesAutoCompleteFilter($event)"/>
+            </nz-input-group>
+            <nz-autocomplete [nzDataSource]="autocomplete.interfaces.availableFilter" nzBackfill></nz-autocomplete>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="url">直连提供者URL</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="直连提供者URL必填">
+            <nz-input-group nzAddOnBefore="dubbo://">
+              <!--suppress HtmlFormInputWithoutLabel -->
+              <input placeholder="例：192.168.66.3:8888" nz-input formControlName="url" id="url"/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="method">调用方法（不需要写括号）</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="调用方法必填">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <input [nzAutocomplete]="availableMethodsAutocomplete" placeholder="例：findUser" nz-input
+                   formControlName="method" id="method" (input)="availableMethodsAutoCompleteFilter($event)"/>
+            <nz-autocomplete [nzDataSource]="autocomplete.methods.availableFilter" nzBackfill
+                             #availableMethodsAutocomplete></nz-autocomplete>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="version">版本</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-input-group [nzSuffix]="versionInfo">
+              <!--suppress HtmlFormInputWithoutLabel -->
+              <input nz-input formControlName="version" id="version"/>
+            </nz-input-group>
+            <ng-template #versionInfo><i nz-icon nz-tooltip nzTooltipTitle="对应API版本(例如1.0)，非必填"
+                                         nzType="info-circle"></i>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="group">分组</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-input-group [nzSuffix]="groupInfo">
+              <!--suppress HtmlFormInputWithoutLabel -->
+              <input nz-input formControlName="group" id="group"/>
+            </nz-input-group>
+            <ng-template #groupInfo><i nz-icon nz-tooltip nzTooltipTitle="对应API分组(例如CN)，非必填" nzType="info-circle"></i>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+      <div style="min-width: 700px;">
+        <app-attribute-item *ngFor="let i of tab.parameterValue" [data]="i" [offset]="0"
+                            (delete)="handleDeleteEvent($event,tab.parameterValue)"
+                            (add)="handleAddEvent($event)"></app-attribute-item>
+      </div>
+      <button nz-button nzType="default" (click)="addInterfaceParam(tab.parameterValue)">添加接口参数</button>&nbsp;
+      <button nz-button nzType="default" (click)="editInterfaceParam(tab.parameterValue)">编辑参数</button>&nbsp;
+      <button nz-button nzType="default" (click)="this.modalShow.resolveUrl = true">解析URL</button>&nbsp;
+      <button nz-button nzType="default" nzDanger nz-popconfirm nzPopconfirmTitle="确定清空吗？" (nzOnConfirm)="clearAll()">
+        清空全部
+      </button>&nbsp;
+      <button nz-button nzType="primary" (click)="sendRequest(tab)" [nzLoading]="tab.isRequestLoading">发起调用</button>
+    </nz-tab>
+  </nz-tabset>
+  <nz-modal [(nzVisible)]="modalShow.editInterfaceParam" nzTitle="参数编辑器" [nzKeyboard]="false"
+            [nzMaskClosable]="false"
+            (nzOnCancel)="modalShow.editInterfaceParam=false" (nzOnOk)="doEditInterfaceParam()">
+    <ng-container *nzModalContent>
+      <div #jsonEditor></div>
+    </ng-container>
+  </nz-modal>
+  <nz-modal [(nzVisible)]="modalShow.resolveUrl" nzTitle="URL解析" [nzKeyboard]="false"
+            [nzMaskClosable]="false"
+            (nzOnCancel)="modalShow.resolveUrl=false" (nzOnOk)="resolveURL()">
+    <ng-container *nzModalContent>
+      <div>
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <textarea nz-input placeholder="dubbo://" nzAutosize [(ngModel)]="resolveURLValue"></textarea>
+      </div>
+    </ng-container>
+  </nz-modal>
+  <nz-modal [(nzVisible)]="modalShow.resolveUrlSelect" nzTitle="选择提供者" [nzKeyboard]="false"
+            [nzMaskClosable]="false" [nzOkDisabled]="!resolveURLValue"
+            (nzOnCancel)="modalShow.resolveUrlSelect=false" (nzOnOk)="resolveSelectURL()">
+    <ng-container *nzModalContent>
+      <nz-select [(ngModel)]="resolveURLValue" style="width: 100%;" nzPlaceHolder="选择提供者...">
+        <nz-option *ngFor="let i of providerInfoArray" [nzValue]="i.url" [nzLabel]="i.info"></nz-option>
+      </nz-select>
+    </ng-container>
+  </nz-modal>
+  <nz-modal [(nzVisible)]="modalShow.methodOverloading" nzTitle="选择方法重载" [nzKeyboard]="false"
+            [nzMaskClosable]="false"
+            (nzOnCancel)="modalShow.methodOverloading=false" (nzOnOk)="resolveSelectMethod()">
+    <ng-container *nzModalContent>
+      <nz-select [(ngModel)]="resolveMethodInfo" style="width: 100%;" nzPlaceHolder="选择方法...">
+        <nz-option *ngFor="let i of methodInfoArray" [nzValue]="i" [nzLabel]="i.signature"></nz-option>
+      </nz-select>
+    </ng-container>
+  </nz-modal>
+  <nz-modal [(nzVisible)]="modalShow.tabReName" nzTitle="TAB重命名" [nzKeyboard]="false"
+            [nzMaskClosable]="false"
+            (nzOnCancel)="modalShow.tabReName=false" (nzOnOk)="doTabReName()">
+    <ng-container *nzModalContent>
+      <!--suppress HtmlFormInputWithoutLabel -->
+      <input nz-input [placeholder]="oldTab.tabName" [(ngModel)]="tabNameForReName"/>
+    </ng-container>
+  </nz-modal>
+</div>

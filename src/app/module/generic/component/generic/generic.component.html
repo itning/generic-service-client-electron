@@ -1,0 +1,65 @@
+<div>
+  <nz-collapse>
+    <nz-collapse-panel nzHeader="参数面板" nzActive [nzExtra]="paramExtra">
+      <app-attribute [tabs]="tabs" [selectedIndex]="nowSelectedTabIndex"
+                     (request)="handleRequest($event)" (tabSelectChange)="handleTabSelect($event)"></app-attribute>
+    </nz-collapse-panel>
+    <ng-template #paramExtra>
+      <button style="margin-right: 6px" nzSize="small" nz-button nzType="default" nzShape="circle"
+              (click)="handleCopyNowTag($event)" nz-tooltip
+              nzTooltipTitle="复制当前TAB参数到新的TAB"><i nz-icon
+                                                  nzType="copy"></i>
+      </button>
+      <button style="margin-right: 6px" nzSize="small" nz-button nzType="default" nzShape="circle"
+              (click)="handleImportAllTags($event)" nz-tooltip
+              nzTooltipTitle="导入所有TAB参数配置"><i nz-icon
+                                              nzType="import"></i>
+      </button>
+      <button style="margin-right: 6px" nzSize="small" nz-button nzType="default" nzShape="circle"
+              (click)="handleExportNowTag($event)" nz-tooltip
+              nzTooltipTitle="导出当前TAB参数配置"><i nz-icon
+                                              nzType="share-alt"></i>
+      </button>
+      <button nzSize="small" nz-button nzType="default" nzShape="circle" (click)="handleExportAllTags($event)"
+              nz-tooltip
+              nzTooltipTitle="导出所有TAB参数配置"><i nz-icon
+                                              nzType="export"></i>
+      </button>
+    </ng-template>
+    <nz-collapse-panel nzHeader="结果面板" nzActive [nzExtra]="resultExtra">
+      <app-result [tabs]="tabs" [nowSelectedTab]="nowSelectedTabIndex"
+                  (lastJsonInfo)="handleLastJsonInfoChange($event)"></app-result>
+    </nz-collapse-panel>
+    <ng-template #resultExtra>
+      <button style="margin-right: 6px" nzSize="small" nz-button nzType="default" nzShape="circle"
+              (click)="handleCopyJsonResult($event)" nz-tooltip
+              nzTooltipTitle="复制JSON结果"><i nz-icon
+                                           nzType="copy"></i>
+      </button>
+      <button nzSize="small" nz-button nzType="default" nzShape="circle" (click)="handleClearResult($event)" nz-tooltip
+              nzTooltipTitle="清空"><i nz-icon
+                                     nzType="clear"></i>
+      </button>
+    </ng-template>
+  </nz-collapse>
+  <nz-modal [(nzVisible)]="isShowImportModal" [nzKeyboard]="false" [nzMaskClosable]="false" nzTitle="导入TAB"
+            (nzOnCancel)="isShowImportModal=false"
+            (nzOnOk)="doImport()">
+    <ng-container *nzModalContent>
+      <nz-textarea-count>
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <textarea nz-input placeholder="在此输入要导入的TAB信息" nzAutosize [(ngModel)]="importTabBase64Str"></textarea>
+      </nz-textarea-count>
+    </ng-container>
+  </nz-modal>
+  <nz-modal [(nzVisible)]="isShowExportModal" [nzKeyboard]="false" [nzMaskClosable]="false" nzTitle="以下内容是Ta人需要导入的"
+            (nzOnCancel)="isShowExportModal=false"
+            (nzOnOk)="isShowExportModal=false">
+    <ng-container *nzModalContent>
+      <nz-textarea-count>
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <textarea rows="10" nz-input [(ngModel)]="exportInfo" readonly></textarea>
+      </nz-textarea-count>
+    </ng-container>
+  </nz-modal>
+</div>

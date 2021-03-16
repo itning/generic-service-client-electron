@@ -1,0 +1,29 @@
+{
+  "productName": "generic-service-client-electron",
+  "directories": {
+    "output": "release/"
+  },
+  "files": [
+    "dist",
+    "file",
+    "main.js"
+  ],
+  "win": {
+    "icon": "dist/assets/icons",
+    "target": [
+      "portable"
+    ]
+  },
+  "mac": {
+    "icon": "dist/assets/icons",
+    "target": [
+      "dmg"
+    ]
+  },
+  "linux": {
+    "icon": "dist/assets/icons",
+    "target": [
+      "AppImage"
+    ]
+  }
+}
