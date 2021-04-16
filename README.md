@@ -11,7 +11,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/itning/generic-service-client-electron.svg)](https://github.com/itning/generic-service-client-electron/commits)
 [![GitHub release](https://img.shields.io/github/release/itning/generic-service-client-electron.svg)](https://github.com/itning/generic-service-client-electron/releases)
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/itning/generic-service-client-electron.svg)](https://github.com/itning/generic-service-client-electron)
-[![HitCount](http://hits.dwyl.io/itning/generic-service-client-electron.svg)](http://hits.dwyl.io/itning/generic-service-client-electron)
+[![HitCount](http://hits.dwyl.com/itning/generic-service-client-electron.svg)](http://hits.dwyl.com/itning/generic-service-client-electron)
 [![language](https://img.shields.io/badge/language-Typescript-green.svg)](https://github.com/itning/generic-service-client-electron)
 
 [Click Me To Open Readme](https://github.com/itning/generic-service-client)
